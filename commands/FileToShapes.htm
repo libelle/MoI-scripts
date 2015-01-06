@@ -1,0 +1,34 @@
+<html>
+<body class="commandbody">
+<div class="commandheader">
+  <div id="file_prompt" class="hiddencommandprompt">Choose shape list file import options</div>
+</div>
+<div id="import_options" class="hiddencommandoptions">
+  <table>
+    <tr>
+      <td>Import data points as:</td>
+      <td>
+        <moi:Select id="shape">
+          <option value="spheres">Spheres</option>
+          <option value="cylinders">Cylinders</option>
+          <option value="cones">Cones</option>
+          <option value="cubes">Cubes</option>
+          <option value="angled">Angled Cubes</option>
+        </moi:Select>
+      </td>
+    </tr>
+      <tr>
+          <td colspan="2">
+              <moi:CheckButton id="zplane">File contains 3D points?</moi:Checkbutton>
+          </td>
+      </tr>
+    <tr>
+      <td colspan="2">
+        <moi:CheckButton id="select">Select newly created shapes?</moi:Checkbutton>
+      </td>
+    </tr>
+  </table>
+  <moi:CommandDoneCancel/>
+</div>
+</body>
+</html>
