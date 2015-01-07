@@ -7,14 +7,14 @@ function generateSpheres(pt_list, is3d)
 
     for (var i = 0; i < pt_list.length; i++)
     {
-        var p = moi.vectorMath.createPoint(pt_list[i][0], pt_list[i][1], (is3d?pt_list[i][2]:0));
+        var p = moi.vectorMath.createPoint(pt_list[i][0], pt_list[i][1], (is3d ? pt_list[i][2] : 0));
         var frame = moi.vectorMath.createFrame(
             p,
             moi.vectorMath.createPoint(1, 0, 0),
             moi.vectorMath.createPoint(0, 0, 1));
         factory.setInput(0, true);
         factory.setInput(1, frame);
-        factory.setInput(3, (is3d?pt_list[i][3]:pt_list[i][2]));
+        factory.setInput(3, (is3d ? pt_list[i][3] : pt_list[i][2]));
 
         obs.addObject(factory.calculate().item(0));
         factory.reset();
@@ -30,15 +30,15 @@ function generateConesOrCylinders(pt_list, is3d, is_cone)
     var factory = moi.command.createFactory((is_cone ? 'cone' : 'cylinder'));
     for (var i = 0; i < pt_list.length; i++)
     {
-        var p = moi.vectorMath.createPoint(pt_list[i][0], pt_list[i][1], (is3d?pt_list[i][2]:0));
-        var p2 = moi.vectorMath.createPoint(pt_list[i][0], pt_list[i][1], (is3d?pt_list[i][2]:0)+1);
+        var p = moi.vectorMath.createPoint(pt_list[i][0], pt_list[i][1], (is3d ? pt_list[i][2] : 0));
+        var p2 = moi.vectorMath.createPoint(pt_list[i][0], pt_list[i][1], (is3d ? pt_list[i][2] : 0) + 1);
         var frame = moi.vectorMath.createFrame(
             p,
             moi.vectorMath.createPoint(1, 0, 0),
             moi.vectorMath.createPoint(0, 0, 1));
 
         factory.setInput(1, frame);
-        factory.setInput(3, (is3d?pt_list[i][3]:pt_list[i][2]));
+        factory.setInput(3, (is3d ? pt_list[i][3] : pt_list[i][2]));
         factory.setInput(4, p2);
 
         obs.addObject(factory.calculate().item(0));
@@ -57,9 +57,9 @@ function generateCubes(pt_list, is3d)
     {
         var x = pt_list[i][0];
         var y = pt_list[i][1];
-        var z = (is3d?pt_list[i][2]:0.0);
-        var d = (is3d?pt_list[i][3]:pt_list[i][2]);
-        var p = moi.vectorMath.createPoint((x - d/2),(y + d/2),z);
+        var z = (is3d ? pt_list[i][2] : 0.0);
+        var d = (is3d ? pt_list[i][3] : pt_list[i][2]);
+        var p = moi.vectorMath.createPoint((x - d / 2), (y + d / 2), z);
 
         var frame = moi.vectorMath.createFrame(
             p,
@@ -86,9 +86,9 @@ function newGenerateCubes(pt_list, is3d, angled)
     {
         var x = pt_list[i][0];
         var y = pt_list[i][1];
-        var z = (is3d?pt_list[i][2]:0.0);
-        var d = (is3d?pt_list[i][3]:pt_list[i][2]);
-        var p = moi.vectorMath.createPoint((x - d/2),(y + d/2),(z - d/2));
+        var z = (is3d ? pt_list[i][2] : 0.0);
+        var d = (is3d ? pt_list[i][3] : pt_list[i][2]);
+        var p = moi.vectorMath.createPoint((x - d / 2), (y + d / 2), (z - d / 2));
 
         var frame = moi.vectorMath.createFrame(
             p,
@@ -104,21 +104,23 @@ function newGenerateCubes(pt_list, is3d, angled)
         {
             var tobj = factory.calculate().item(0);
             var newobjs = moi.geometryDatabase.createObjectList();
-            newobjs.addObject( tobj );
+            newobjs.addObject(tobj);
             var bb = tobj.getBoundingBox();
             var axis1 = moi.vectorMath.createPoint(
-                bb.center.x - bb.xLength/2,
-                bb.center.y - bb.yLength/2,
-                bb.center.z);
+                bb.center.x - bb.xLength / 2,
+                bb.center.y - bb.yLength / 2,
+                bb.center.z + bb.zLength / 2);
             var axis2 = moi.vectorMath.createPoint(
-                bb.center.x + bb.xLength/2,
-                bb.center.y + bb.yLength/2,
-                bb.center.z);
-            var rot_fact = moi.command.createFactory( 'rotateaxis' );
+                bb.center.x + bb.xLength / 2,
+                bb.center.y + bb.yLength / 2,
+                bb.center.z + bb.zLength / 2);
+            var rot_fact = moi.command.createFactory('rotateaxis');
             rot_fact.setInput(0, newobjs);
             rot_fact.setInput(1, axis1);
             rot_fact.setInput(2, axis2);
-            rot_fact.setInput(3, 55.0);
+            // damn, this is why I can't do Physics. "Intuition" convinced me that this
+            // should be 45° until I finally understood it.
+            rot_fact.setInput(3, 90 - 180 * Math.atan(1 / Math.sqrt(2)) / Math.PI);
             rot_fact.setInput(6, false);
 
             obs.addObject(rot_fact.calculate().item(0));
@@ -168,7 +170,7 @@ function FileToShapes()
             if (split_coord[i] != '')
                 coord.push(parseFloat(split_coord[i]));
         }
-        if ((! is3d && coord.length == 3 && coord[2] > 0) ||
+        if ((!is3d && coord.length == 3 && coord[2] > 0) ||
             (is3d && coord.length == 4 && coord[3] > 0))
             pt_list.push(coord);
     }
@@ -189,34 +191,9 @@ function FileToShapes()
     else if (shape == 'angled')
         obj_list = newGenerateCubes(pt_list, is3d, true);
 
-
-    if (false && shape == 'angled')
-    {
-        for (var i=0;i<obj_list.length;i++)
-        {
-            var tcube = obj_list.item(i);
-            var newobjlist = moi.geometryDatabase.createObjectList();
-            objlist.addObject( tcube );
-            var center = tcube.getBoundingBox().center;
-            var taxis = moi.vectorMath.createPoint(center.x, center.y, 2*center.z);
-            var rot_fact = moi.command.createFactory( 'rotateaxis' );
-            rot_fact.setInput(0, objlist);
-            rot_fact.setInput(1, center);
-            rot_fact.setInput(2, taxis);
-            rot_fact.setInput(3, 45);
-            rot_fact.setInput(6, false);
-            rot_fact.commit();
-        }
-    }
-    else
-    {
-        if (select)
-            obj_list.setProperty('selected', true);
-        moi.geometryDatabase.addObjects(obj_list);
-    }
-
-
-
+    if (select)
+        obj_list.setProperty('selected', true);
+    moi.geometryDatabase.addObjects(obj_list);
 }
 
 FileToShapes();
