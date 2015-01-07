@@ -77,6 +77,60 @@ function generateCubes(pt_list, is3d)
     return obs;
 }
 
+function newGenerateCubes(pt_list, is3d, angled)
+{
+    var obs = moi.geometryDatabase.createObjectList();
+    var factory = moi.command.createFactory('box');
+
+    for (var i = 0; i < pt_list.length; i++)
+    {
+        var x = pt_list[i][0];
+        var y = pt_list[i][1];
+        var z = (is3d?pt_list[i][2]:0.0);
+        var d = (is3d?pt_list[i][3]:pt_list[i][2]);
+        var p = moi.vectorMath.createPoint((x - d/2),(y + d/2),(z - d/2));
+
+        var frame = moi.vectorMath.createFrame(
+            p,
+            moi.vectorMath.createPoint(1, 0, 0),
+            moi.vectorMath.createPoint(0, 0, 1));
+
+        factory.setInput(0, frame);
+        factory.setInput(2, d);
+        factory.setInput(3, d);
+        factory.setInput(4, d);
+
+        if (angled)
+        {
+            var tobj = factory.calculate().item(0);
+            var newobjs = moi.geometryDatabase.createObjectList();
+            newobjs.addObject( tobj );
+            var bb = tobj.getBoundingBox();
+            var axis1 = moi.vectorMath.createPoint(
+                bb.center.x - bb.xLength/2,
+                bb.center.y - bb.yLength/2,
+                bb.center.z);
+            var axis2 = moi.vectorMath.createPoint(
+                bb.center.x + bb.xLength/2,
+                bb.center.y + bb.yLength/2,
+                bb.center.z);
+            var rot_fact = moi.command.createFactory( 'rotateaxis' );
+            rot_fact.setInput(0, newobjs);
+            rot_fact.setInput(1, axis1);
+            rot_fact.setInput(2, axis2);
+            rot_fact.setInput(3, 55.0);
+            rot_fact.setInput(6, false);
+
+            obs.addObject(rot_fact.calculate().item(0));
+        }
+        else
+            obs.addObject(factory.calculate().item(0));
+        factory.reset();
+    }
+    factory.cancel();
+    return obs;
+}
+
 function FileToShapes()
 {
     var filename = moi.filesystem.getOpenFileName('Choose a CSV file', 'Point files (*.txt, *.csv)|*.txt;*.csv|All files (*.*)|*.*');
@@ -130,11 +184,13 @@ function FileToShapes()
         obj_list = generateConesOrCylinders(pt_list, is3d, false);
     else if (shape == 'cones')
         obj_list = generateConesOrCylinders(pt_list, is3d, true);
-    else if (shape == 'cubes' || shape == 'angled')
-        obj_list = generateCubes(pt_list, is3d);
+    else if (shape == 'cubes')
+        obj_list = newGenerateCubes(pt_list, is3d, false);
+    else if (shape == 'angled')
+        obj_list = newGenerateCubes(pt_list, is3d, true);
 
 
-    if (shape == 'angled')
+    if (false && shape == 'angled')
     {
         for (var i=0;i<obj_list.length;i++)
         {
