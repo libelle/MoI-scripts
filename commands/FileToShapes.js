@@ -14,7 +14,7 @@ function generateSpheres(pt_list, is3d)
             moi.vectorMath.createPoint(0, 0, 1));
         factory.setInput(0, true);
         factory.setInput(1, frame);
-        factory.setInput(3, (is3d ? pt_list[i][3] : pt_list[i][2]));
+        factory.setInput(3, (is3d ? pt_list[i][3] : pt_list[i][2])/2);
 
         obs.addObject(factory.calculate().item(0));
         factory.reset();
@@ -38,7 +38,7 @@ function generateConesOrCylinders(pt_list, is3d, is_cone)
             moi.vectorMath.createPoint(0, 0, 1));
 
         factory.setInput(1, frame);
-        factory.setInput(3, (is3d ? pt_list[i][3] : pt_list[i][2]));
+        factory.setInput(3, (is3d ? pt_list[i][3] : pt_list[i][2])/2);
         factory.setInput(4, p2);
 
         obs.addObject(factory.calculate().item(0));
