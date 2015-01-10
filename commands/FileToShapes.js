@@ -155,24 +155,35 @@ function FileToShapes()
 
     var shape = moi.ui.commandUI.shape.value;
     var select = moi.ui.commandUI.select.value;
-    var is3d = moi.ui.commandUI.zplane.value;
+    var is3d = false;
 
     var f = moi.filesystem.openFileStream(filename, 'r');
 
     var pt_list = [];
+    var first = true;
 
     while (!f.AtEOF)
     {
-        var split_coord = f.readLine().split(/[,\t;\s]+/);
-        var coord = [];
-        for (var i = 0; i < split_coord.length; ++i)
+        var line = f.readLine();
+        if (line.length > 0 && line[0] != '#')
         {
-            if (split_coord[i] != '')
-                coord.push(parseFloat(split_coord[i]));
+            var split_coord = line.split(/[,\t;\s]+/);
+            var coord = [];
+            for (var i = 0; i < split_coord.length; ++i)
+            {
+                if (split_coord[i] != '')
+                    coord.push(parseFloat(split_coord[i]));
+            }
+            if (first)
+            {
+                if (coord.length == 4)
+                    is3d = true;
+                first = false;
+            }
+            if ((!is3d && coord.length == 3 && coord[2] > 0) ||
+                (is3d && coord.length == 4 && coord[3] > 0))
+                pt_list.push(coord);
         }
-        if ((!is3d && coord.length == 3 && coord[2] > 0) ||
-            (is3d && coord.length == 4 && coord[3] > 0))
-            pt_list.push(coord);
     }
     f.close();
 
