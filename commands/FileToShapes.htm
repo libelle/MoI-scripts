@@ -1,10 +1,29 @@
 <html>
+<head>
+    <link rel="stylesheet" href="moi://ui/moi.css" type="text/css">
+    <script>
+        function showHideCoef()
+        {
+            moi.ui.beginUIUpdate();
+
+            var zaxis = moi.ui.commandUI.zaxis.value;
+            if (zaxis)
+                moi.ui.showUI('onlyifz');
+            else
+                moi.ui.hideUI('onlyifz');
+            moi.ui.endUIUpdate();
+        }
+        </script>
+</head>
 <body class="commandbody">
 <div class="commandheader">
   <div id="file_prompt" class="hiddencommandprompt">Choose shape list file import options</div>
 </div>
 <div id="import_options" class="hiddencommandoptions">
   <table>
+      <tr>
+          <td colspan="2">Please use a CSV file with rows containing "x, y, val" or "x, y, z, val"</td>
+      </tr>
     <tr>
       <td>Import data points as:</td>
       <td>
@@ -17,13 +36,34 @@
         </moi:Select>
       </td>
     </tr>
+      <tr>
+          <td colspan="2">
+              <moi:CheckButton id="size">Use val to vary shape size?</moi:Checkbutton>
+          </td>
+      </tr>
+      <tr>
+          <td colspan="2">
+              <moi:CheckButton id="zaxis" onclick="showHideCoef();">Use val to vary shape Z-axis offset?</moi:Checkbutton>
+          </td>
+      </tr>
+      <tr id="onlyifz" class="hiddencommandoptions">
+          <td>
+              Offset Coefficient:
+          </td>
+          <td>
+              <moi:NumericInput id="coefficient" style="width:3em;" default="1"></moi:NumericInput>
+          </td>
+      </tr>
     <tr>
       <td colspan="2">
         <moi:CheckButton id="select">Select newly created shapes?</moi:Checkbutton>
       </td>
     </tr>
+      <tr><td colspan="2"><moi:CommandDoneCancel/></td></tr>
+    <tr>
+        <td colspan="2"><div id="statusline" style="width:100%;"></div></td>
+    </tr>
   </table>
-  <moi:CommandDoneCancel/>
 </div>
 </body>
 </html>

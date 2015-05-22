@@ -1,20 +1,31 @@
 // config: norepeat
 
-function generateSpheres(pt_list, is3d)
+function generateSpheres(pt_list, is3d, size, zaxis)
 {
     var obs = moi.geometryDatabase.createObjectList();
     var factory = moi.command.createFactory('sphere');
 
     for (var i = 0; i < pt_list.length; i++)
     {
-        var p = moi.vectorMath.createPoint(pt_list[i][0], pt_list[i][1], (is3d ? pt_list[i][2] : 0));
+        var diameter = 1;
+        var offset = 0;
+        if (size && is3d)
+            diameter = pt_list[i][3];
+        else if (size)
+            diameter = pt_list[i][2];
+        if (zaxis && is3d)
+            offset = pt_list[i][2] + zaxis * pt_list[i][3];
+        else if (zaxis)
+            offset = zaxis * pt_list[i][2];
+        
+        var p = moi.vectorMath.createPoint(pt_list[i][0], pt_list[i][1], offset);
         var frame = moi.vectorMath.createFrame(
             p,
             moi.vectorMath.createPoint(1, 0, 0),
             moi.vectorMath.createPoint(0, 0, 1));
         factory.setInput(0, true);
         factory.setInput(1, frame);
-        factory.setInput(3, (is3d ? pt_list[i][3] : pt_list[i][2])/2);
+        factory.setInput(3, diameter/2);
 
         obs.addObject(factory.calculate().item(0));
         factory.reset();
@@ -24,21 +35,32 @@ function generateSpheres(pt_list, is3d)
     return obs;
 }
 
-function generateConesOrCylinders(pt_list, is3d, is_cone)
+function generateConesOrCylinders(pt_list, is3d, size, zaxis, is_cone)
 {
     var obs = moi.geometryDatabase.createObjectList();
     var factory = moi.command.createFactory((is_cone ? 'cone' : 'cylinder'));
     for (var i = 0; i < pt_list.length; i++)
     {
-        var p = moi.vectorMath.createPoint(pt_list[i][0], pt_list[i][1], (is3d ? pt_list[i][2] : 0));
-        var p2 = moi.vectorMath.createPoint(pt_list[i][0], pt_list[i][1], (is3d ? pt_list[i][2] : 0) + 1);
+        var diameter = 1;
+        var offset = 0;
+        if (size && is3d)
+            diameter = pt_list[i][3];
+        else if (size)
+            diameter = pt_list[i][2];
+        if (zaxis && is3d)
+            offset = pt_list[i][2] + zaxis * pt_list[i][3];
+        else if (zaxis)
+            offset = zaxis * pt_list[i][2];
+
+        var p = moi.vectorMath.createPoint(pt_list[i][0], pt_list[i][1], offset);
+        var p2 = moi.vectorMath.createPoint(pt_list[i][0], pt_list[i][1], offset + 1);
         var frame = moi.vectorMath.createFrame(
             p,
             moi.vectorMath.createPoint(1, 0, 0),
             moi.vectorMath.createPoint(0, 0, 1));
 
         factory.setInput(1, frame);
-        factory.setInput(3, (is3d ? pt_list[i][3] : pt_list[i][2])/2);
+        factory.setInput(3, diameter/2);
         factory.setInput(4, p2);
 
         obs.addObject(factory.calculate().item(0));
@@ -48,18 +70,29 @@ function generateConesOrCylinders(pt_list, is3d, is_cone)
     return obs;
 }
 
-function generateCubes(pt_list, is3d)
+
+function generateCubes(pt_list, is3d, size, zaxis, angled)
 {
     var obs = moi.geometryDatabase.createObjectList();
     var factory = moi.command.createFactory('box');
 
     for (var i = 0; i < pt_list.length; i++)
     {
+        var dim = 1;
+        var offset = 0;
+        if (size && is3d)
+            dim = pt_list[i][3];
+        else if (size)
+            dim = pt_list[i][2];
+        if (zaxis && is3d)
+            offset = pt_list[i][2] + zaxis * pt_list[i][3];
+        else if (zaxis)
+            offset = zaxis * pt_list[i][2];
+
         var x = pt_list[i][0];
         var y = pt_list[i][1];
-        var z = (is3d ? pt_list[i][2] : 0.0);
-        var d = (is3d ? pt_list[i][3] : pt_list[i][2]);
-        var p = moi.vectorMath.createPoint((x - d / 2), (y + d / 2), z);
+        var z = offset;
+        var p = moi.vectorMath.createPoint((x - dim / 2), (y + dim / 2), (z - dim / 2));
 
         var frame = moi.vectorMath.createFrame(
             p,
@@ -67,38 +100,9 @@ function generateCubes(pt_list, is3d)
             moi.vectorMath.createPoint(0, 0, 1));
 
         factory.setInput(0, frame);
-        factory.setInput(2, d);
-        factory.setInput(3, d);
-        factory.setInput(4, d);
-        obs.addObject(factory.calculate().item(0));
-        factory.reset();
-    }
-    factory.cancel();
-    return obs;
-}
-
-function newGenerateCubes(pt_list, is3d, angled)
-{
-    var obs = moi.geometryDatabase.createObjectList();
-    var factory = moi.command.createFactory('box');
-
-    for (var i = 0; i < pt_list.length; i++)
-    {
-        var x = pt_list[i][0];
-        var y = pt_list[i][1];
-        var z = (is3d ? pt_list[i][2] : 0.0);
-        var d = (is3d ? pt_list[i][3] : pt_list[i][2]);
-        var p = moi.vectorMath.createPoint((x - d / 2), (y + d / 2), (z - d / 2));
-
-        var frame = moi.vectorMath.createFrame(
-            p,
-            moi.vectorMath.createPoint(1, 0, 0),
-            moi.vectorMath.createPoint(0, 0, 1));
-
-        factory.setInput(0, frame);
-        factory.setInput(2, d);
-        factory.setInput(3, d);
-        factory.setInput(4, d);
+        factory.setInput(2, dim);
+        factory.setInput(3, dim);
+        factory.setInput(4, dim);
 
         if (angled)
         {
@@ -139,9 +143,12 @@ function FileToShapes()
     if (filename == '')
         return; // Cancel.
 
+    moi.ui.commandUI.size.value = true;
+    moi.ui.commandUI.zaxis.value = false;
     moi.ui.beginUIUpdate();
     moi.ui.showUI('file_prompt');
     moi.ui.showUI('import_options');
+    moi.ui.hideUI('onlyifz');
     moi.ui.endUIUpdate();
     var dialog = moi.ui.commandDialog;
 
@@ -149,12 +156,17 @@ function FileToShapes()
     {
         if (!dialog.waitForEvent())
             return;
+        if (dialog.event)
         if (dialog.event == 'done')
             break;
     }
 
+    moi.ui.commandUI.statusline.innerHTML  = 'Calculating...';
     var shape = moi.ui.commandUI.shape.value;
     var select = moi.ui.commandUI.select.value;
+    var size = moi.ui.commandUI.size.value;
+    var zaxis = moi.ui.commandUI.zaxis.value;
+    var coefficient = moi.ui.commandUI.coefficient.value;
     var is3d = false;
 
     var f = moi.filesystem.openFileStream(filename, 'r');
@@ -191,20 +203,22 @@ function FileToShapes()
         return;
 
     var obj_list;
+
     if (shape == 'spheres')
-        obj_list = generateSpheres(pt_list, is3d);
+        obj_list = generateSpheres(pt_list, is3d, size, (zaxis?coefficient:false));
     else if (shape == 'cylinders')
-        obj_list = generateConesOrCylinders(pt_list, is3d, false);
+        obj_list = generateConesOrCylinders(pt_list, is3d, size, (zaxis?coefficient:false), false);
     else if (shape == 'cones')
-        obj_list = generateConesOrCylinders(pt_list, is3d, true);
+        obj_list = generateConesOrCylinders(pt_list, is3d, size, (zaxis?coefficient:false), true);
     else if (shape == 'cubes')
-        obj_list = newGenerateCubes(pt_list, is3d, false);
+        obj_list = generateCubes(pt_list, is3d, size, (zaxis?coefficient:false), false);
     else if (shape == 'angled')
-        obj_list = newGenerateCubes(pt_list, is3d, true);
+        obj_list = generateCubes(pt_list, is3d, size, (zaxis?coefficient:false), true);
 
     if (select)
         obj_list.setProperty('selected', true);
     moi.geometryDatabase.addObjects(obj_list);
+    moi.ui.commandUI.statusline.innerHTML  = '';
 }
 
 FileToShapes();
