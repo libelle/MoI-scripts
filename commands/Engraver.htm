@@ -1,0 +1,29 @@
+<html>
+<head>
+    <link rel="stylesheet" href="moi://ui/moi.css" type="text/css">
+</head>
+<body class="commandbody">
+<div class="commandheader">
+    <div id="file_prompt" class="hiddencommandprompt">Choose data file</div>
+</div>
+<div id="import_options" class="hiddencommandoptions">
+    <table>
+        <tr>
+            <td colspan="2">Please use a CSV file with rows containing values.</td>
+        </tr>
+        <tr>
+            <td>Ridge creation:</td>
+            <td>
+                <moi:Select id="style">
+                    <option value="smooth">Smooth</option>
+                    <option value="angular">Angular</option>
+                </moi:Select>
+            </td>
+        </tr>
+        <tr><td colspan="2"><moi:CommandDoneCancel/></td></tr>
+        <tr>
+            <td colspan="2"><div id="statusline" style="width:100%;"></div></td>
+        </tr>
+    </table>
+</div></body>
+</html>
