@@ -1,17 +1,17 @@
-##Engraver
-###What
+## Engraver
+### What
 This takes a file of containing a grid of sizes (in the range 0.0 - 1.0), and uses the data to create ridges in MoI, suitable for 3D printing.
 
 The expected file format is just rows and columns of values.
 
 The file should be CSV or tab-delimited, although it also accepts spaces or semicolons as delimiters. Lines starting with a hash # are considered comments and are ignored.
 
-###Installation
+### Installation
 If MoI is running, quit the application.
 Download and unzip the archive, or copy it down using whatever method makes sense to you (fork it, git clone it, etc.).
 
 Place the Engraver.js and Engraver.htm files into the MoI command folder.
-You can find the MoI command folder somewhere like C:\Program Files\Moi3d\commands on Windows installations, and in /Applications/MoI.app/drive_c/moi/commands under OSX (you will typically have to right-click on the MoI.app and choose "Show package contents" to see this folder).
+You can find the MoI command folder somewhere like ``C:\Program Files\Moi3d\commands`` on Windows installations, and in ``/Applications/MoI.app/drive_c/moi/commands`` under OSX (you will typically have to right-click on the ``MoI.app`` and choose "Show package contents" to see this folder).
 
 Now you can start MoI.
 
@@ -32,7 +32,7 @@ Use the drop down to choose whether you want smooth ridges or angular ridges. An
 
 Click on "Done" and eventually, your ridges will be generated! I'm not sure about Windows, but unfortunately MoI running in the Wine environment on Mac OS doesn't utilize more than one CPU core, so something like the 50x50 examples below will take a few minutes (while on my machine, seven cores sit around bored). I should probably add a progress bar of sorts, if I could figure out how.
 
-###Fergzample
+### Fergzample
 There is one sample file:
 
 * *dorothy.csv* an example of a 40x50 portrait image converted to an engraving ![engraving example](http://fogbound.net/moi/engraving.png)
