@@ -1,8 +1,8 @@
-#What's All This Then?
+# What's All This Then?
 Right, guv, this is a place where I'll be keeping my growing collection of handy scripts for MoI - the [Moment of Inspiration](http://www.moi3d.com) modeler.
 
-##FileToShapes
-###What
+## FileToShapes
+### What
 This takes a file of points (either 2D or 3D) and sizes (in the range 0.0 - 1.0), and uses the data to create shapes in MoI.
 
 If the points file is 3D, the shapes will be positioned centered at the points and scaled according to the size.
@@ -32,7 +32,7 @@ If MoI is running, quit the application.
 Download and unzip the archive, or copy it down using whatever method makes sense to you (fork it, git clone it, etc.).
 
 Place the FileToShape.js and FileToShape.htm files into the MoI command folder.
-You can find the MoI command folder somewhere like C:\Program Files\Moi3d\commands on Windows installations, and in /Applications/MoI.app/drive_c/moi/commands under OSX (you will typically have to right-click on the MoI.app and choose "Show package contents" to see this folder).
+You can find the MoI command folder somewhere like ``C:\Program Files\Moi3d\commands`` on Windows installations, and in ``/Applications/MoI.app/drive_c/moi/commands`` under OSX (you will typically have to right-click on the MoI.app and choose "Show package contents" to see this folder).
 
 Now you can start MoI.
 
@@ -57,7 +57,7 @@ The checkbox options should be relatively self-explanatory.
 
 Click on "Done" and eventually, your shapes will be generated! I'm not sure about Windows, but unfortunately MoI running in the Wine environment on Mac OS doesn't utilize more than one CPU core, so something like the 50x50 examples below will take a few minutes (while on my machine, seven cores sit around bored). I should probably add a progress bar of sorts, if I could figure out how.
 
-###Fergzample
+### Fergzample
 There are four sample files:
 
 * *spiral2d.csv* a simple 2D spiral ![2d spiral top view](http://fogbound.net/moi/spiral.png)
